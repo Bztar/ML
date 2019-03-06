@@ -1,5 +1,5 @@
 Initialize a git repo:
----------------------
+
 	1. Create a new repository on Github
 	2. Open git bash
 	3. Change the current working directory to your local project
