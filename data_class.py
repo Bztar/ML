@@ -1,8 +1,12 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-Better design
+
 """
+# Mute warnings
+import warnings
+warnings.filterwarnings("ignore")
+
 # Import libraries
 import pandas as pd
 import numpy as np
@@ -16,8 +20,8 @@ class dataObject:
     def __init__(self, filename):
         self.filename = filename
         
-    def read_data(self):
-        self.df = pd.read_csv(self.filename, index_col='patient_id')
+    def read_data(self, index):
+        self.df = pd.read_csv(self.filename, index_col=index)
         return self.df
     
     def clean(self):
@@ -55,7 +59,7 @@ class dataObject:
     def show_features(self):
         # Print the results
         for f in range(self.X_train.shape[1]):
-            print("%2d. %-*s %f" % (f+1, 50, 
+            print("%2d. %-*s %f" % (f+1, 40, 
                             self.feat_labels[self.indices[f]],
                             self.importances[self.indices[f]]))
         
