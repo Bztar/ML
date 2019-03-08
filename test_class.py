@@ -30,12 +30,11 @@ class dataObject:
     
     def train_test_set(self, labels):
         # Separate into training and test sets
-        X_train, X_test, y_train, y_test = train_test_split(self.df,
-                                                            labels,
-                                                            test_size=0.3,
-                                                            random_state=0)
-    
-        return X_train, X_test, y_train, y_test
+        self.X_train, self.X_test,\
+        self.y_train, self.y_test = train_test_split(self.df,
+                                                    labels,
+                                                    test_size=0.3,
+                                                    random_state=0)
     
     def feature_selection(self, X_train, y_train):
         # Use randomforest for feature selection
@@ -74,22 +73,4 @@ class dataObject:
         plt.show()
 
 
-# Create an instance of training values
-train_values = dataObject('train_values.csv')
-
-# Create an instance of training labels
-train_labels = dataObject('train_labels.csv')
-
-# Read data
-train_values.read_data()
-train_labels.read_data()
-
-# Clean the data
-train_values.clean()
-
-# Split data into train/test set
-X_train, X_test, y_train, y_test = train_values.train_test_set(train_labels.df)
-
-# Send training data to select feature importance
-train_values.feature_selection(X_train, y_train)
 
