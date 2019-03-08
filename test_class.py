@@ -38,7 +38,7 @@ class dataObject:
     
     def feature_selection(self, X_train, y_train):
         # Use randomforest for feature selection
-        feat_labels = X_train.columns
+        self.feat_labels = X_train.columns
         
         # Set up the RF-classifier
         forest = RandomForestClassifier(n_estimators=100,
@@ -49,26 +49,27 @@ class dataObject:
         forest.fit(X_train, y_train)
         
         # Ranking of feature importance
-        importances = forest.feature_importances_
-        indices = np.argsort(importances)[::-1]
+        self.importances = forest.feature_importances_
+        self.indices = np.argsort(self.importances)[::-1]
 
+    def show_features(self):
         # Print the results
-        for f in range(X_train.shape[1]):
+        for f in range(self.X_train.shape[1]):
             print("%2d. %-*s %f" % (f+1, 50, 
-                            feat_labels[indices[f]],
-                            importances[indices[f]]))
+                            self.feat_labels[self.indices[f]],
+                            self.importances[self.indices[f]]))
         
         # Plot the results from feature selection in bar plot
         plt.title('Feature Importances')
-        plt.bar(range(X_train.shape[1]),
-                importances[indices],
+        plt.bar(range(self.X_train.shape[1]),
+                self.importances[self.indices],
                 color='lightblue',
                 align='center')
         
-        plt.xticks(range(X_train.shape[1]),
-                   feat_labels[indices], rotation=90)
+        plt.xticks(range(self.X_train.shape[1]),
+                   self.feat_labels[self.indices], rotation=90)
         
-        plt.xlim([-1, X_train.shape[1]])
+        plt.xlim([-1, self.X_train.shape[1]])
         plt.tight_layout()
         plt.show()
 
