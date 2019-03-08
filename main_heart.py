@@ -2,7 +2,10 @@
 """
 
 """
-from test_class import dataObject
+from data_class import dataObject
+import pandas as pd
+
+pd.set_option('display.max_columns', 40)
 
 # Create an instance of training values
 values = dataObject('train_values.csv')

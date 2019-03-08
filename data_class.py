@@ -31,7 +31,8 @@ class dataObject:
                     'fixed_defect': 2}
     
         self.df.thal = self.df.thal.map(thal_map)
-    
+        
+
     def train_test_set(self, labels):
         # Separate into training and test sets
         self.X_train, self.X_test,\
@@ -49,13 +50,14 @@ class dataObject:
                                         random_state=0,
                                         n_jobs=-1)
         
-        # Fit the clf to the training data
+        # Fit the RF-clf to the training data
         forest.fit(X_train, y_train)
         
         # Ranking of feature importance
         self.importances = forest.feature_importances_
         self.indices = np.argsort(self.importances)[::-1]
-
+        
+        
     def show_features(self):
         # Print the results
         for f in range(self.X_train.shape[1]):
