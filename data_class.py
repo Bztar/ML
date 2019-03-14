@@ -38,7 +38,7 @@ class dataObject:
         self.X_train, self.X_test,\
         self.y_train, self.y_test = train_test_split(self.df,
                                                     labels,
-                                                    test_size=0.3,
+                                                    test_size=0.2,
                                                     random_state=0)
     
     def feature_selection(self, X_train, y_train):
