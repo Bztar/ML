@@ -10,9 +10,18 @@ warnings.filterwarnings("ignore")
 # Import libraries
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+
+# Import classifiers
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+
+# Import cross val and metrics
+from sklearn.model_selection import cross_val_score
+
 
 # Define the class dataObject
 class dataObject:
@@ -21,7 +30,7 @@ class dataObject:
         self.filename = filename
         
     def read_data(self, index):
-        self.df = pd.read_csv(self.filename, index_col=index)
+        self.df = pd.read_csv("../Data/"+self.filename, index_col=index)
         return self.df
     
     def clean(self):
@@ -58,8 +67,10 @@ class dataObject:
         self.indices = np.argsort(self.importances)[::-1]
         
         
+        
     def show_features(self):
         # Print the results
+        print("List of feature importance")
         for f in range(self.X_train.shape[1]):
             print("%2d. %-*s %f" % (f+1, 40, 
                             self.feat_labels[self.indices[f]],
@@ -78,6 +89,44 @@ class dataObject:
         plt.xlim([-1, self.X_train.shape[1]])
         plt.tight_layout()
         plt.show()
+        
+    def classifier_results(self):
+        # Make a list of Classifiers
+        classifiers = [LogisticRegression(),
+                       KNeighborsClassifier(n_neighbors=3),
+                       GaussianNB(),
+                       RandomForestClassifier(n_estimators=1000, random_state=8)]
+        
+        # Cross val scores for the different clf
+        for clf in classifiers:
+            name = clf.__class__.__name__
+            Accuracy = cross_val_score(clf, 
+                                       self.X_train, 
+                                       self.y_train, 
+                                       scoring='accuracy',
+                                       cv=5).mean()
+            
+            LogLoss = cross_val_score(clf, 
+                                       self.X_train, 
+                                       self.y_train, 
+                                       scoring='neg_log_loss',
+                                       cv=5).mean()
+            
+            ROC_AUC = cross_val_score(clf, 
+                                       self.X_train, 
+                                       self.y_train, 
+                                       scoring='roc_auc',
+                                       cv=5).mean()
+            
+            print('='*30)
+            print(name)
+            
+            print('**Results**')
+            print('Accuracy: {}'.format(Accuracy))
+            print('LogLoss: {}'.format(LogLoss))
+            print('ROC_AUC: {}'.format(ROC_AUC))
+        
+        print('='*30)
 
 
 
