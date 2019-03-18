@@ -1,6 +1,2 @@
-<<<<<<< HEAD
-HELLOAGAIN2<
-=======
-HELLO
->>>>>>> develop
-lol
+matha
+thatas
