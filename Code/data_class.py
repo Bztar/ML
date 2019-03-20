@@ -18,6 +18,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
 
 # Import cross val and metrics
 from sklearn.model_selection import cross_val_score
@@ -34,13 +35,7 @@ class dataObject:
         return self.df
     
     def clean(self):
-        # Map the data in thal column to integers
-        thal_map = {'normal': 0, 
-                    'reversible_defect': 1,
-                    'fixed_defect': 2}
-    
-        self.df.thal = self.df.thal.map(thal_map)
-        
+        self.df = pd.get_dummies(self.df)
 
     def train_test_set(self, labels):
         # Separate into training and test sets
@@ -50,7 +45,7 @@ class dataObject:
                                                     test_size=0.2,
                                                     random_state=0)
     
-    def feature_selection(self, X_train, y_train):
+    def feature_importance(self, X_train, y_train):
         # Use randomforest for feature selection
         self.feat_labels = X_train.columns
         
@@ -90,12 +85,20 @@ class dataObject:
         plt.tight_layout()
         plt.show()
         
+    def feature_selection():
+        """
+        TODO: Add vizualisation for optimal # of features
+        http://rasbt.github.io/mlxtend/user_guide/feature_selection/SequentialFeatureSelector/
+        """
+        pass
+        
     def classifier_results(self):
         # Make a list of Classifiers
         classifiers = [LogisticRegression(),
                        KNeighborsClassifier(n_neighbors=3),
                        GaussianNB(),
-                       RandomForestClassifier(n_estimators=1000, random_state=8)]
+                       RandomForestClassifier(n_estimators=1000, random_state=8),
+                       SVC(probability=True)]
         
         # Cross val scores for the different clf
         for clf in classifiers:

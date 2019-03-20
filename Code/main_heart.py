@@ -32,31 +32,64 @@ values.train_test_set(labels.df)
 #values.classifier_results()
 
 # Send training data to select feature importance
-#values.feature_selection(values.X_train, values.y_train)
+#values.feature_importance(values.X_train, values.y_train)
 
 # Show feature importance
 #values.show_features()
 
+
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 
+# Pipeline for classifier
 pipe = Pipeline([('scl', StandardScaler()),
-                 ('clf', LogisticRegression())])
+                 ('clf', SVC(random_state=1,
+                             probability=True))])
 
-# Create the random grid
-param_grid = {}
+# Parameter range for C and gamma
+C_param_range = [0.001, 0.01, 0.1, 1.0, 10, 100, 1000]
+gamma_param_range = [1e-2, 1e-3, 1e-4, 1e-5]
 
-gs = GridSearchCV(estimator=pipe,
-                  param_grid = param_grid,
-                  scoring = 'accuracy',
-                  cv = 10,
-                  n_jobs = 1)
+# What types of scoring in gridsearch
+scores = ['precision', 'recall','accuracy']
 
-gs = gs.fit(values.X_train, values.y_train)
-print(gs.best_score_)
+# Three diff kernels: linear, rbf and sigmoid
+param_grid = [{'clf__kernel':['linear'],
+               'clf__C':C_param_range},
+              {'clf__kernel': ['rbf'],
+               'clf__C': C_param_range, 
+               'clf__gamma': gamma_param_range},
+               {'clf__kernel': ['sigmoid'],
+                'clf__C': C_param_range,
+                'clf__gamma': gamma_param_range}]
 
+for score in scores: 
+    print('Hyperparameter tuning for %s' % score)
+    print('='*30)
+    gs = GridSearchCV(estimator=pipe,
+                      param_grid = param_grid,
+                      scoring = '%s' % score,
+                      cv = 10,
+                      n_jobs = 1,
+                      return_train_score=True)
+    
+    gs.fit(values.X_train, values.y_train)
+
+    print("Best parameters set found on development set:")
+    print()
+    print(gs.best_params_)
+    print()
+    print("Grid scores on development set:")
+    print()
+    means = gs.cv_results_['mean_test_score']
+    stds = gs.cv_results_['std_test_score']
+    for mean, std, params in zip(means, stds, gs.cv_results_['params']):
+        print("%0.3f (+/-%0.03f) for %r"
+              % (mean, std * 2, params))
+    print()
+    
 clf = gs.best_estimator_
 clf.fit(values.X_train, values.y_train)
 print('Test accuracy: %.3f' % clf.score(values.X_test, values.y_test))
@@ -69,6 +102,5 @@ print('Test accuracy: %.3f' % clf.score(values.X_test, values.y_test))
 # res = pred[['heart_disease_present']]
 # res.index = test.df.index
 # res.to_csv('result.csv')
+# 
 # =============================================================================
-
-
