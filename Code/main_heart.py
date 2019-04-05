@@ -38,6 +38,11 @@ values.train_test_set(labels.df)
 #values.show_features()
 
 
+"""
+TODO: Move the different steps below to the data_class
+"""
+# Pipeline
+# values.create_pipeline(Scaling, Classifier)
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
@@ -48,6 +53,11 @@ pipe = Pipeline([('scl', StandardScaler()),
                  ('clf', SVC(random_state=1,
                              probability=True))])
 
+"""
+Hyperparameter tuning for the chosen classifier
+Returns the best tuned classifier from GridSearch
+"""
+#clf = values.hypertune
 # Parameter range for C and gamma
 C_param_range = [0.001, 0.01, 0.1, 1.0, 10, 100, 1000]
 gamma_param_range = [1e-2, 1e-3, 1e-4, 1e-5]
