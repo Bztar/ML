@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 https://scikit-learn.org/stable/
-https://github.com/sujoyde89/driven-data-kernels
+
 """
 from data_class import dataObject
 import pandas as pd
